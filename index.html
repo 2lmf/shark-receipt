@@ -28,7 +28,7 @@
 
     <nav class="navbar">
         <div class="logo">
-            SHARK<span class="accent">RECEIPT</span> <i class="fas fa-shark logo-icon"></i>
+            SHARK<span class="accent">RECEIPT</span> <i class="fas fa-fish-fins logo-icon"></i>
         </div>
         <div class="nav-actions">
             <div class="stat-item">
@@ -108,7 +108,11 @@
                 <span class="close-modal">&times;</span>
             </div>
             <div class="modal-body">
-                <img src="" alt="Receipt Preview" id="modalImg">
+                <!-- Image modal hidden until data is loaded -->
+                <div id="modalImgContainer"
+                    style="display: none; width: 100%; border-radius: 10px; overflow: hidden; margin-bottom: 20px;">
+                    <img src="" alt="Receipt Preview" id="modalImg" style="width: 100%; height: auto;">
+                </div>
                 <div class="receipt-data-form">
                     <!-- Form fields here -->
                 </div>

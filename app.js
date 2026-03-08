@@ -53,11 +53,12 @@ function renderReceipts(data) {
         card.className = `receipt-card new`;
         card.style.animationDelay = `${index * 0.1}s`;
 
-        // Određivanje ikone na temelju kategorije
+        // Određivanje ikone na temelju kategorije (FontAwesome Free kompatibilno)
         let icon = "fa-file-invoice-dollar";
         if (receipt.kategorija.toLowerCase().includes("gorivo")) icon = "fa-gas-pump";
         if (receipt.kategorija.toLowerCase().includes("ured")) icon = "fa-laptop";
         if (receipt.kategorija.toLowerCase().includes("reprezentacija")) icon = "fa-utensils";
+        if (receipt.kategorija.toLowerCase().includes("it")) icon = "fa-microchip";
 
         card.innerHTML = `
             <div class="img-thumb">
