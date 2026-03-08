@@ -143,18 +143,46 @@
                         <input type="text" id="editDobavljac" class="form-control" />
                     </div>
                     <div class="form-group">
-                        <label>Datum:</label>
-                        <input type="text" id="editDatum" class="form-control" />
+                        <label>Adresa:</label>
+                        <input type="text" id="editAdresa" class="form-control" />
                     </div>
                     <div class="form-group" style="display: flex; gap: 10px;">
                         <div style="flex: 1;">
-                            <label>Iznos (€):</label>
-                            <input type="number" id="editIznos" class="form-control" step="0.01" />
+                            <label>OIB:</label>
+                            <input type="text" id="editOib" class="form-control" />
+                        </div>
+                        <div style="flex: 1;">
+                            <label>Broj Računa:</label>
+                            <input type="text" id="editBrojRacuna" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="form-group" style="display: flex; gap: 10px;">
+                        <div style="flex: 1;">
+                            <label>Datum:</label>
+                            <input type="text" id="editDatum" class="form-control" />
+                        </div>
+                        <div style="flex: 1;">
+                            <label>Način Plaćanja:</label>
+                            <input type="text" id="editNacinPlacanja" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="form-group" style="display: flex; gap: 10px;">
+                        <div style="flex: 1;">
+                            <label>Osnovica (€):</label>
+                            <input type="number" id="editOsnovica" class="form-control" step="0.01" />
                         </div>
                         <div style="flex: 1;">
                             <label>PDV (€):</label>
                             <input type="number" id="editPdv" class="form-control" step="0.01" />
                         </div>
+                        <div style="flex: 1;">
+                            <label>Iznos (€):</label>
+                            <input type="number" id="editIznos" class="form-control" step="0.01" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>IBAN:</label>
+                        <input type="text" id="editIban" class="form-control" />
                     </div>
                     <div class="form-group">
                         <label>Kategorija:</label>
@@ -168,13 +196,7 @@
                             <option value="Ostalo">Ostalo</option>
                         </select>
                     </div>
-                    <!-- Hidden fields for other data -->
-                    <input type="hidden" id="editOib" />
-                    <input type="hidden" id="editAdresa" />
-                    <input type="hidden" id="editBrojRacuna" />
-                    <input type="hidden" id="editOsnovica" />
-                    <input type="hidden" id="editNacinPlacanja" />
-                    <input type="hidden" id="editIban" />
+                    <!-- Raw image name stays hidden -->
                     <input type="hidden" id="editRawImageName" />
                 </div>
             </div>
@@ -183,7 +205,7 @@
                 <button class="btn-primary" id="btnConfirmScan">KNJIŽI U SHEET</button>
             </div>
         </div>
-        <script src="app.js?v=3"></script>
+        <script src="app.js?v=4"></script>
 </body>
 
 </html>
