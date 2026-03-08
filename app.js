@@ -407,11 +407,10 @@ async function handleSync() {
     btnContent.innerHTML = '<i class="fas fa-spinner fa-spin"></i> SHARKING...';
 
     try {
-        // Pozivamo POST na GAS Web App s pravilnim zaglavljem (premošćivanje CORS-a i 302 Redirect grešaka)
-        const response = await fetch(GAS_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify({ action: "sync" })
+        // Pozivamo GET na GAS Web App za sinkronizaciju (CORS friendly)
+        const fetchUrl = GAS_URL.includes("?") ? GAS_URL + "&action=sync" : GAS_URL + "?action=sync";
+        const response = await fetch(fetchUrl, {
+            method: 'GET'
         });
 
         // Sačekajmo JSON obradu (sada nam to radi jer nismo u "no-cors" opaq. modu)
