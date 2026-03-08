@@ -373,3 +373,93 @@ body {
 .fab-btn:active {
     transform: scale(0.9) rotate(15deg);
 }
+
+/* --- MODAL BUTTONS & TABS (v1.2) --- */
+
+.modal-footer {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.btn-primary,
+.btn-outline {
+    flex: 1;
+    padding: 14px;
+    border-radius: 12px;
+    font-family: var(--font-header);
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    text-transform: uppercase;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--accent), #FF9F43);
+    color: #000;
+    border: none;
+    box-shadow: 0 4px 15px rgba(230, 126, 34, 0.3);
+}
+
+.btn-primary:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 8px rgba(230, 126, 34, 0.2);
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--text-main);
+    border: 1px solid var(--glass-border);
+}
+
+.btn-outline:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--text-muted);
+}
+
+/* Tab Content Visibility */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.4s ease forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Empty State Styling */
+.empty-tab {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--text-muted);
+}
+
+.empty-tab i {
+    font-size: 3.5rem;
+    margin-bottom: 20px;
+    color: var(--accent);
+    opacity: 0.5;
+    display: block;
+}
+
+.empty-tab h2 {
+    font-family: var(--font-header);
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: var(--text-main);
+}
+}
