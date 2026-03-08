@@ -211,11 +211,12 @@ async function confirmAndSaveReceipt() {
             confirmBtn.innerHTML = originalText;
             confirmBtn.disabled = false;
 
+            // UVIJEK zatvori modal nakon uspješnog spremanja (tako korisnik dobije feedback)
+            modal.classList.remove('active');
+
             if (isSyncFlow) {
-                // Ako smo u sync flow-u, odmah traži sljedeći bez zatvaranja modala
+                // Ako smo u sync flow-u, odmah traži sljedeći (ovo će ga po potrebi ponovno otvoriti)
                 handleSync();
-            } else {
-                modal.classList.remove('active');
             }
         }, 1500);
 
