@@ -3,6 +3,7 @@ const GAS_URL = "https://script.google.com/macros/s/AKfycbwiBlzkjGQcE8w7l28SeB3V
 
 let receiptsData = [];
 let pendingCount = 0;
+let isSyncFlow = false; // Prati jesmo li u lancu sinkronizacije
 
 // --- DOM ELEMENTS ---
 const receiptGrid = document.getElementById('receiptGrid');
@@ -38,6 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // --- FILE UPLOAD LOGIC ---
 
 async function handleFileUpload(e) {
+    isSyncFlow = false; // Ručni upload, nećemo ulančavati
     const file = e.target.files[0];
     if (!file) return;
 
@@ -205,10 +207,16 @@ async function confirmAndSaveReceipt() {
         setTimeout(async () => {
             await fetchData();
             const modal = document.getElementById('previewModal');
-            modal.classList.remove('active');
 
             confirmBtn.innerHTML = originalText;
             confirmBtn.disabled = false;
+
+            if (isSyncFlow) {
+                // Ako smo u sync flow-u, odmah traži sljedeći bez zatvaranja modala
+                handleSync();
+            } else {
+                modal.classList.remove('active');
+            }
         }, 1500);
 
     } catch (err) {
@@ -399,6 +407,7 @@ function updateStats() {
 }
 
 async function handleSync() {
+    isSyncFlow = true; // Aktiviran lanac sinkronizacije
     const btnContent = btnSync.querySelector('.btn-content');
     const originalContent = btnContent.innerHTML;
 
