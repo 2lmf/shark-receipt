@@ -16,7 +16,7 @@
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <link rel="stylesheet" href="style.css?v=3">
+    <link rel="stylesheet" href="style.css?v=5">
 </head>
 
 <body>
@@ -73,19 +73,39 @@
     </main>
 
     <div class="tab-content" id="tab-history">
-        <div class="empty-tab">
-            <i class="fas fa-history"></i>
-            <h2>Povijest</h2>
-            <p>Ovdje će biti arhiva tvojih obrađenih računa.</p>
-        </div>
+        <section class="feed-section">
+            <div class="section-title">
+                <i class="fas fa-history"></i> ARHIVIRANI RAČUNI
+            </div>
+            <div class="receipt-grid" id="historyGrid">
+                <!-- Javascript will populate this -->
+            </div>
+        </section>
     </div>
 
     <div class="tab-content" id="tab-ledger">
-        <div class="empty-tab">
-            <i class="fas fa-file-invoice"></i>
-            <h2>Dnevnik</h2>
-            <p>Pregled knjiženja u realnom vremenu.</p>
-        </div>
+        <section class="feed-section" style="padding: 0;">
+            <div class="section-title" style="padding: 0 20px;">
+                <i class="fas fa-table"></i> KNJIGOVODSTVENI DNEVNIK
+            </div>
+            <div class="table-container" style="overflow-x: auto; padding: 0 20px; margin-top: 15px;">
+                <table class="shark-table"
+                    style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.8rem;">
+                    <thead>
+                        <tr style="border-bottom: 1px solid var(--glass-border); color: var(--accent);">
+                            <th style="padding: 10px;">Datum</th>
+                            <th style="padding: 10px;">Dobavljač</th>
+                            <th style="padding: 10px;">Broj Računa</th>
+                            <th style="padding: 10px;">Kategorija</th>
+                            <th style="padding: 10px; text-align: right;">Iznos</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ledgerTableBody">
+                        <!-- Javascript will populate this -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
     </div>
 
     <div class="tab-content" id="tab-settings">
@@ -205,7 +225,7 @@
                 <button class="btn-primary" id="btnConfirmScan">KNJIŽI U SHEET</button>
             </div>
         </div>
-        <script src="app.js?v=4"></script>
+        <script src="app.js?v=5"></script>
 </body>
 
 </html>

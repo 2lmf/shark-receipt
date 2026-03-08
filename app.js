@@ -5,6 +5,8 @@ let receiptsData = [];
 
 // --- DOM ELEMENTS ---
 const receiptGrid = document.getElementById('receiptGrid');
+const historyGrid = document.getElementById('historyGrid');
+const ledgerTableBody = document.getElementById('ledgerTableBody');
 const btnSync = document.getElementById('btnSync');
 const monthlyTotalEl = document.getElementById('monthlyTotal');
 const pendingCountEl = document.getElementById('pendingCount');
@@ -247,7 +249,11 @@ async function fetchData() {
 
         if (result.status === "success") {
             receiptsData = result.items;
-            renderReceipts(receiptsData);
+            // Dashboard prikazuje samo novijih top-10
+            renderReceipts(receiptsData.slice(0, 10));
+            // Povijest i Dnevnik prikazuju sve
+            if (historyGrid) renderHistory(receiptsData);
+            if (ledgerTableBody) renderLedger(receiptsData);
             updateStats();
         }
     } catch (err) {
@@ -298,6 +304,86 @@ function renderReceipts(data) {
         });
 
         receiptGrid.appendChild(card);
+    });
+}
+
+function renderHistory(data) {
+    if (!historyGrid) return;
+    historyGrid.innerHTML = '';
+
+    if (data.length === 0) {
+        historyGrid.innerHTML = '<p class="no-data">Nema dostupnih računa u povijesti.</p>';
+        return;
+    }
+
+    data.forEach((receipt, index) => {
+        const card = document.createElement('div');
+        card.className = `receipt-card`;
+
+        let icon = "fa-file-invoice-dollar";
+        if (receipt.kategorija && receipt.kategorija.toLowerCase().includes("gorivo")) icon = "fa-gas-pump";
+        if (receipt.kategorija && receipt.kategorija.toLowerCase().includes("ured")) icon = "fa-laptop";
+        if (receipt.kategorija && receipt.kategorija.toLowerCase().includes("reprezentacija")) icon = "fa-utensils";
+        if (receipt.kategorija && receipt.kategorija.toLowerCase().includes("it")) icon = "fa-microchip";
+
+        card.innerHTML = `
+            <div class="img-thumb">
+                <i class="fas ${icon}"></i>
+            </div>
+            <div class="receipt-info">
+                <h3>${receipt.dobavljac || 'Nepoznato'}</h3>
+                <div class="meta">
+                    <span>${receipt.datum || '-'}</span>
+                    <span>•</span>
+                    <span>${receipt.broj_racuna || '-'}</span>
+                </div>
+            </div>
+            <div class="receipt-amount">
+                <span class="price">${parseFloat(receipt.iznos || 0).toFixed(2)}</span>
+                <span class="label">EUR</span>
+            </div>
+        `;
+
+        card.addEventListener('click', () => {
+            if (receipt.link) window.open(receipt.link, '_blank');
+        });
+
+        historyGrid.appendChild(card);
+    });
+}
+
+function renderLedger(data) {
+    if (!ledgerTableBody) return;
+    ledgerTableBody.innerHTML = '';
+
+    if (data.length === 0) {
+        ledgerTableBody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 20px;">Tablica dnevnika je prazna</td></tr>';
+        return;
+    }
+
+    data.forEach((receipt) => {
+        const row = document.createElement('tr');
+        row.style.borderBottom = "1px solid rgba(255,255,255,0.05)";
+
+        // Klikom na red se otvara sken na Google Driveu
+        if (receipt.link) {
+            row.style.cursor = "pointer";
+            row.addEventListener('click', () => window.open(receipt.link, '_blank'));
+            row.title = "Klikni za pregled računa";
+        }
+
+        row.innerHTML = `
+            <td style="padding: 10px;">${receipt.datum || '-'}</td>
+            <td style="padding: 10px; font-weight: 600; color: #fff;">${receipt.dobavljac || 'Nepoznato'}</td>
+            <td style="padding: 10px;">${receipt.broj_racuna || '-'}</td>
+            <td style="padding: 10px;">
+                <span style="background: rgba(0, 208, 132, 0.1); color: var(--accent); padding: 3px 8px; border-radius: 12px; font-size: 0.7rem;">
+                    ${receipt.kategorija || 'Ostalo'}
+                </span>
+            </td>
+            <td style="padding: 10px; text-align: right; font-weight: 700;">${parseFloat(receipt.iznos || 0).toFixed(2)} €</td>
+        `;
+        ledgerTableBody.appendChild(row);
     });
 }
 
