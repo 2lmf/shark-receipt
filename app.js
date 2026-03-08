@@ -50,6 +50,10 @@ async function handleFileUpload(e) {
 
         const response = await fetch(GAS_URL, {
             method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'text/plain'
+            },
             body: JSON.stringify({
                 action: "upload",
                 filename: `Shark_${Date.now()}_${file.name}`,
@@ -58,8 +62,12 @@ async function handleFileUpload(e) {
             })
         });
 
-        // Nakon uploada, automatski pokrećemo sinkronizaciju (obradu)
-        await handleSync();
+        console.log("Upload request sent, starting sync...");
+
+        // Dajemo mu sekundu da procesira upload prije sinkronizacije
+        setTimeout(async () => {
+            await handleSync();
+        }, 1500);
 
     } catch (err) {
         console.error("Greška pri uploadu:", err);
