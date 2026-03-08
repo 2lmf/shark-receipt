@@ -55,25 +55,48 @@ async function handleFileUpload(e) {
                 'Content-Type': 'text/plain'
             },
             body: JSON.stringify({
-                action: "upload",
+                action: "analyzeAndUpload",
                 filename: `Shark_${Date.now()}_${file.name}`,
                 mimeType: file.type,
                 data: base64Content
             })
         });
 
-        console.log("Upload request sent, starting sync...");
+        console.log("Slanje slike na analizu...");
 
-        // Dajemo mu sekundu da procesira upload prije sinkronizacije
-        setTimeout(async () => {
-            await handleSync();
-        }, 1500);
+        // PAŽNJA: no-cors ne vara JSON. Moramo koristiti hack s JSONP-om ili GAS mora slati JSON na poseban način.
+        // Prije smo koristili 'no-cors' pa nismo mogli dohvatiti odgovor iz GAS-a, ali ovdje to pokušavamo. 
+        // Ako aplikacija pukne ovdje jer response.json() ne radi, morat ćemo maknuti 'no-cors' ili GAS podesiti za čisti CORS. 
+        try {
+            const result = await response.json();
+
+            if (result.status === "success" && result.data) {
+                btnContent.innerHTML = '<i class="fas fa-check"></i> PROČITANO';
+                btnSync.style.background = '#00D084';
+
+                // Popuni formu s podacima
+                fillModalForm(result.data, result.fileName);
+
+                // Otvori modal
+                const modal = document.getElementById('previewModal');
+                modal.classList.add('active');
+
+            } else {
+                throw new Error(result.message || "Neuspjela analiza");
+            }
+        } catch (jsonErr) {
+            // Često padne zbog 'no-cors' ograničenja, ali sad smo na fetch() pa je to očekivano ako backend ne postavi headers
+            console.error("Ne mogu čitati JSON odgovor. Google script možda blokira CORS umjesto dopusti.", jsonErr);
+            throw jsonErr;
+        }
 
     } catch (err) {
-        console.error("Greška pri uploadu:", err);
-        btnContent.innerHTML = '<i class="fas fa-times"></i> UPLOAD FAIL';
+        console.error("Greška pri skeniranju/obradi:", err);
+        btnContent.innerHTML = '<i class="fas fa-times"></i> SCAN FAIL';
+    } finally {
         setTimeout(() => {
             btnContent.innerHTML = originalContent;
+            btnSync.style.background = '#FFFFFF';
             btnSync.disabled = false;
         }, 3000);
     }
@@ -111,18 +134,113 @@ function initNavigation() {
     });
 }
 
+// --- MODAL LOGIC (REVIEW & EDIT) ---
+
+function fillModalForm(data, rawImageName) {
+    document.getElementById('editDobavljac').value = data.dobavljac || "";
+    document.getElementById('editDatum').value = data.datum || "";
+    document.getElementById('editIznos').value = parseFloat(data.iznos) || 0;
+    document.getElementById('editPdv').value = parseFloat(data.pdv) || 0;
+
+    // Set matching option for Kategorija if exists, default to 'Ostalo'
+    const catSelect = document.getElementById('editKategorija');
+    let matchedOption = Array.from(catSelect.options).find(opt =>
+        opt.value.toLowerCase() === (data.kategorija || "").toLowerCase()
+    );
+    if (matchedOption) {
+        catSelect.value = matchedOption.value;
+    } else {
+        catSelect.value = "Ostalo";
+    }
+
+    // Skrivena polja
+    document.getElementById('editOib').value = data.oib || "";
+    document.getElementById('editAdresa').value = data.adresa || "";
+    document.getElementById('editBrojRacuna').value = data.broj_racuna || "";
+    document.getElementById('editOsnovica').value = data.osnovica || 0;
+    document.getElementById('editNacinPlacanja').value = data.nacin_placanja || "";
+    document.getElementById('editIban').value = data.iban || "";
+    document.getElementById('editRawImageName').value = rawImageName || "";
+}
+
+async function confirmAndSaveReceipt() {
+    const confirmBtn = document.getElementById('btnConfirmScan');
+    const originalText = confirmBtn.innerHTML;
+
+    confirmBtn.disabled = true;
+    confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> SPREMANJE...';
+
+    // Skupi podatke nazad u objekt
+    const verifiedData = {
+        dobavljac: document.getElementById('editDobavljac').value,
+        datum: document.getElementById('editDatum').value,
+        iznos: parseFloat(document.getElementById('editIznos').value || 0),
+        pdv: parseFloat(document.getElementById('editPdv').value || 0),
+        kategorija: document.getElementById('editKategorija').value,
+
+        oib: document.getElementById('editOib').value,
+        adresa: document.getElementById('editAdresa').value,
+        broj_racuna: document.getElementById('editBrojRacuna').value,
+        osnovica: parseFloat(document.getElementById('editOsnovica').value || 0),
+        nacin_placanja: document.getElementById('editNacinPlacanja').value,
+        iban: document.getElementById('editIban').value
+    };
+
+    const fileNameToProcess = document.getElementById('editRawImageName').value;
+
+    try {
+        const response = await fetch(GAS_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify({
+                action: "saveConfirmedData",
+                data: verifiedData,
+                fileName: fileNameToProcess
+            })
+        });
+
+        // Simulirajmo čekanje dok no-cors ne završi i obnavljamo dashboard
+        setTimeout(async () => {
+            await fetchData();
+            const modal = document.getElementById('previewModal');
+            modal.classList.remove('active');
+
+            confirmBtn.innerHTML = originalText;
+            confirmBtn.disabled = false;
+        }, 1500);
+
+    } catch (err) {
+        console.error("Greška kod spremanja:", err);
+        confirmBtn.innerHTML = "GREŠKA!";
+        setTimeout(() => {
+            confirmBtn.innerHTML = originalText;
+            confirmBtn.disabled = false;
+        }, 2000);
+    }
+}
+
 function initModal() {
     const modal = document.getElementById('previewModal');
     const closeBtn = document.querySelector('.close-modal');
+    const cancelBtn = document.getElementById('btnCancelScan');
+    const confirmBtn = document.getElementById('btnConfirmScan');
 
-    if (closeBtn) {
-        closeBtn.onclick = () => modal.classList.remove('active');
+    const closeModal = () => modal.classList.remove('active');
+
+    if (closeBtn) closeBtn.onclick = closeModal;
+    if (cancelBtn) cancelBtn.onclick = closeModal;
+
+    if (confirmBtn) {
+        confirmBtn.onclick = confirmAndSaveReceipt;
     }
 
     window.onclick = (event) => {
-        if (event.target == modal) modal.classList.remove('active');
+        if (event.target == modal) closeModal();
     }
 }
+
+// --- DATA FETCHING ---
 
 async function fetchData() {
     try {

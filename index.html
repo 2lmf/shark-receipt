@@ -16,7 +16,7 @@
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=2">
 </head>
 
 <body>
@@ -28,7 +28,7 @@
 
     <nav class="navbar">
         <div class="logo">
-            SHARK<span class="accent">RECEIPT</span> <i class="fas fa-fish-fins logo-icon"></i>
+            SHARK<span class="accent">RECEIPT v2.0</span> <i class="fas fa-fish-fins logo-icon"></i>
         </div>
         <div class="nav-actions">
             <div class="stat-item">
@@ -137,18 +137,53 @@
                     style="display: none; width: 100%; border-radius: 10px; overflow: hidden; margin-bottom: 20px;">
                     <img src="" alt="Receipt Preview" id="modalImg" style="width: 100%; height: auto;">
                 </div>
-                <div class="receipt-data-form">
-                    <!-- Form fields here -->
+                <div class="receipt-data-form" id="receiptDataForm">
+                    <div class="form-group">
+                        <label>Dobavljač:</label>
+                        <input type="text" id="editDobavljac" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>Datum:</label>
+                        <input type="text" id="editDatum" class="form-control" />
+                    </div>
+                    <div class="form-group" style="display: flex; gap: 10px;">
+                        <div style="flex: 1;">
+                            <label>Iznos (€):</label>
+                            <input type="number" id="editIznos" class="form-control" step="0.01" />
+                        </div>
+                        <div style="flex: 1;">
+                            <label>PDV (€):</label>
+                            <input type="number" id="editPdv" class="form-control" step="0.01" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Kategorija:</label>
+                        <select id="editKategorija" class="form-control">
+                            <option value="Gorivo">Gorivo</option>
+                            <option value="Ured">Ured</option>
+                            <option value="Reprezentacija">Reprezentacija</option>
+                            <option value="IT oprema">IT oprema</option>
+                            <option value="Restorani">Restorani</option>
+                            <option value="Građevinski materijal">Građevinski materijal</option>
+                            <option value="Ostalo">Ostalo</option>
+                        </select>
+                    </div>
+                    <!-- Hidden fields for other data -->
+                    <input type="hidden" id="editOib" />
+                    <input type="hidden" id="editAdresa" />
+                    <input type="hidden" id="editBrojRacuna" />
+                    <input type="hidden" id="editOsnovica" />
+                    <input type="hidden" id="editNacinPlacanja" />
+                    <input type="hidden" id="editIban" />
+                    <input type="hidden" id="editRawImageName" />
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn-outline">OTKAŽI</button>
-                <button class="btn-primary">KNJIŽI U SHEET</button>
+                <button class="btn-outline" id="btnCancelScan">OTKAŽI</button>
+                <button class="btn-primary" id="btnConfirmScan">KNJIŽI U SHEET</button>
             </div>
         </div>
-    </div>
-
-    <script src="app.js"></script>
+        <script src="app.js?v=2"></script>
 </body>
 
 </html>
