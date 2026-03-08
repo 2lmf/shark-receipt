@@ -438,6 +438,8 @@ async function handleSync() {
         } else if (result.status === "empty") {
             btnContent.innerHTML = '<i class="fas fa-info-circle"></i> NEMA RAČUNA';
             btnSync.style.background = '#FFCC00';
+            // Zatvori modal ako je bio otvoren (kraj sync flow-a)
+            document.getElementById('previewModal').classList.remove('active');
         } else {
             throw new Error(result.message || "Neuspjela sinkronizacija");
         }
