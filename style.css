@@ -164,7 +164,8 @@ body {
 */
 
 .table-container {
-    overflow-x: auto;
+    overflow-x: hidden;
+    /* Možda nam više neće trebati scroll ako sve stane */
     -webkit-overflow-scrolling: touch;
     margin-top: 15px;
     border-radius: 12px;
@@ -172,9 +173,44 @@ body {
 }
 
 .shark-table {
-    min-width: 650px;
-    /* Force minimum width to prevent column squeezing */
+    width: 100%;
+    table-layout: fixed;
+    /* Forsira zadane širine stupaca */
 }
+
+/* Specific column widths for Ledger */
+.shark-table th:nth-child(1),
+.shark-table td:nth-child(1) {
+    width: 65px;
+}
+
+/* Datum */
+.shark-table th:nth-child(2),
+.shark-table td:nth-child(2) {
+    width: auto;
+    white-space: normal !important;
+    word-break: break-word;
+}
+
+/* Dobavljac - prelomi! */
+.shark-table th:nth-child(3),
+.shark-table td:nth-child(3) {
+    width: 70px;
+}
+
+/* Broj */
+.shark-table th:nth-child(4),
+.shark-table td:nth-child(4) {
+    width: 75px;
+}
+
+/* Kategorija */
+.shark-table th:nth-child(5),
+.shark-table td:nth-child(5) {
+    width: 75px;
+}
+
+/* Iznos */
 
 /* --- SETTINGS TAB --- */
 .settings-section {
