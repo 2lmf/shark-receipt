@@ -1,0 +1,17 @@
+{
+    "name": "SharkReceipt",
+    "short_name": "SharkReceipt",
+    "start_url": "index.html",
+    "display": "standalone",
+    "background_color": "#010103",
+    "theme_color": "#E67E22",
+    "description": "Premium AI Invoice Scanner for 2LMF PRO",
+    "icons": [
+        {
+            "src": "https://cdn-icons-png.flaticon.com/512/1006/1006626.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}

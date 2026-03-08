@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="hr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SharkReceipt | AI Invoice System</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#010103">
+
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Outfit:wght@300;400;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="grid-overlay"></div>
+
+    <!-- Background Elements -->
+    <div class="glow-sphere pink"></div>
+    <div class="glow-sphere orange"></div>
+
+    <nav class="navbar">
+        <div class="logo">
+            SHARK<span class="accent">RECEIPT</span> <i class="fas fa-shark logo-icon"></i>
+        </div>
+        <div class="nav-actions">
+            <div class="stat-item">
+                <span class="label">MJESEC:</span>
+                <span class="value" id="monthlyTotal">0.00 €</span>
+            </div>
+            <div class="energy-meter">
+                <i class="fas fa-bolt"></i>
+                <div class="bar-container">
+                    <div class="bar" style="width: 85%;"></div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="dashboard">
+        <header class="dashboard-header">
+            <div class="welcome">
+                <h1>Dobrodošli natrag, <span class="accent">Karlo</span></h1>
+                <p>Imate <span id="pendingCount">3</span> nova računa za obradu.</p>
+            </div>
+            <button class="btn-sync" id="btnSync">
+                <span class="btn-content">
+                    <i class="fas fa-sync-alt"></i> SHARK SYNC
+                </span>
+                <div class="btn-glow"></div>
+            </button>
+        </header>
+
+        <section class="feed-section">
+            <div class="section-title">
+                <i class="fas fa-receipt"></i> LIVE FEED RAČUNA
+            </div>
+            <div class="receipt-grid" id="receiptGrid">
+                <!-- Simulating loading / empty state -->
+                <div class="loader-container" id="mainLoader" style="display: none;">
+                    <div class="shark-loader"></div>
+                    <p>Shark skenira Drive...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Floating Action Button -->
+    <div class="fab">
+        <input type="file" id="fileInput" accept="image/*" capture="camera" hidden>
+        <button class="fab-btn" onclick="document.getElementById('fileInput').click()">
+            <i class="fas fa-camera"></i>
+        </button>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="#" class="nav-link active">
+            <i class="fas fa-th-large"></i>
+            <span>Dashboard</span>
+        </a>
+        <a href="#" class="nav-link">
+            <i class="fas fa-history"></i>
+            <span>Povijest</span>
+        </a>
+        <a href="#" class="nav-link">
+            <i class="fas fa-file-invoice"></i>
+            <span>Dnevnik</span>
+        </a>
+        <a href="#" class="nav-link">
+            <i class="fas fa-cog"></i>
+            <span>Postavke</span>
+        </a>
+    </nav>
+
+    <!-- Modal for Preview -->
+    <div class="modal" id="previewModal">
+        <div class="modal-content glass">
+            <div class="modal-header">
+                <h3>Detalji Računa</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <img src="" alt="Receipt Preview" id="modalImg">
+                <div class="receipt-data-form">
+                    <!-- Form fields here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-outline">OTKAŽI</button>
+                <button class="btn-primary">KNJIŽI U SHEET</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
