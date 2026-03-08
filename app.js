@@ -21,8 +21,61 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Event Listeners
     btnSync.addEventListener('click', handleSync);
+
+    // File Upload Listener
+    const fileInput = document.getElementById('fileInput');
+    if (fileInput) {
+        fileInput.addEventListener('change', handleFileUpload);
+    }
+
     initNavigation();
     initModal();
+});
+
+// --- FILE UPLOAD LOGIC ---
+
+async function handleFileUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Loader state
+    const btnContent = btnSync.querySelector('.btn-content');
+    const originalContent = btnContent.innerHTML;
+    btnSync.disabled = true;
+    btnContent.innerHTML = '<i class="fas fa-upload fa-spin"></i> SHARK UPLOADING...';
+
+    try {
+        const base64 = await toBase64(file);
+        const base64Content = base64.split(',')[1];
+
+        const response = await fetch(GAS_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+                action: "upload",
+                filename: `Shark_${Date.now()}_${file.name}`,
+                mimeType: file.type,
+                data: base64Content
+            })
+        });
+
+        // Nakon uploada, automatski pokrećemo sinkronizaciju (obradu)
+        await handleSync();
+
+    } catch (err) {
+        console.error("Greška pri uploadu:", err);
+        btnContent.innerHTML = '<i class="fas fa-times"></i> UPLOAD FAIL';
+        setTimeout(() => {
+            btnContent.innerHTML = originalContent;
+            btnSync.disabled = false;
+        }, 3000);
+    }
+}
+
+const toBase64 = file => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
 });
 
 // --- NAVIGATION ---
