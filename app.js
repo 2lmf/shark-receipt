@@ -407,26 +407,29 @@ async function handleSync() {
     btnContent.innerHTML = '<i class="fas fa-spinner fa-spin"></i> SHARKING...';
 
     try {
-        // Pozivamo POST na GAS Web App
+        // Pozivamo POST na GAS Web App s pravilnim zaglavljem (premošćivanje CORS-a i 302 Redirect grešaka)
         const response = await fetch(GAS_URL, {
             method: 'POST',
-            mode: 'no-cors' // Google Apps Script često zahtijeva no-cors za jednostavne POST-ove
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ action: "sync" })
         });
 
-        // Budući da 'no-cors' ne vraća body, čekamo par sekundi i osvježavamo podatke
-        setTimeout(async () => {
-            await fetchData();
+        // Sačekajmo JSON obradu (sada nam to radi jer nismo u "no-cors" opaq. modu)
+        await response.json();
 
-            btnContent.innerHTML = '<i class="fas fa-check"></i> GOTOVO!';
-            btnSync.style.background = '#00D084';
+        // Dovlači nove podatke s backenda (uključujući Pending Count)
+        await fetchData();
 
-            // Reset button
-            setTimeout(() => {
-                btnContent.innerHTML = originalContent;
-                btnSync.style.background = '#FFFFFF';
-                btnSync.disabled = false;
-            }, 2000);
-        }, 3000);
+        btnContent.innerHTML = '<i class="fas fa-check"></i> GOTOVO!';
+        btnSync.style.background = '#00D084';
+
+        // Reset button
+        setTimeout(() => {
+            btnContent.innerHTML = originalContent;
+            btnSync.style.background = '#FFFFFF';
+            btnSync.disabled = false;
+        }, 2000);
+
 
     } catch (err) {
         console.error("Greška pri sinkronizaciji:", err);
