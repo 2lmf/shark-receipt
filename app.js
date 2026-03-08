@@ -204,6 +204,7 @@ async function confirmAndSaveReceipt() {
         });
 
         // Simulirajmo čekanje dok no-cors ne završi i obnavljamo dashboard
+        // Povećano na 2000ms kako bi Google Drive stigao "proknjižiti" pomicanje datoteke u indeksu
         setTimeout(async () => {
             await fetchData();
             const modal = document.getElementById('previewModal');
@@ -218,7 +219,7 @@ async function confirmAndSaveReceipt() {
                 // Ako smo u sync flow-u, odmah traži sljedeći (ovo će ga po potrebi ponovno otvoriti)
                 handleSync();
             }
-        }, 1500);
+        }, 2000);
 
     } catch (err) {
         console.error("Greška kod spremanja:", err);

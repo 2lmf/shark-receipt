@@ -118,8 +118,25 @@ body {
     font-size: 0.9rem;
     font-weight: 700;
     color: var(--accent);
+    white-space: nowrap;
 }
 
+.shark-table td {
+    white-space: nowrap;
+}
+
+.stat-item.main-sum {
+    min-width: 80px;
+    /* Added to make it wider */
+}
+
+.stat-item.main-sum .value {
+    font-size: 1.1rem;
+    color: #00D084;
+}
+
+/* Energy meter removed as per user request */
+/*
 .energy-meter {
     display: flex;
     align-items: center;
@@ -144,6 +161,7 @@ body {
     height: 100%;
     background: linear-gradient(90deg, #F1C40F, var(--accent));
 }
+*/
 
 /* Dashboard Content */
 .dashboard {
