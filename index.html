@@ -44,7 +44,7 @@
         </div>
     </nav>
 
-    <main class="dashboard">
+    <main class="dashboard tab-content active" id="tab-dashboard">
         <header class="dashboard-header">
             <div class="welcome">
                 <h1>Dobrodošli natrag, <span class="accent">Karlo</span></h1>
@@ -72,6 +72,30 @@
         </section>
     </main>
 
+    <div class="tab-content" id="tab-history">
+        <div class="empty-tab">
+            <i class="fas fa-history"></i>
+            <h2>Povijest</h2>
+            <p>Ovdje će biti arhiva tvojih obrađenih računa.</p>
+        </div>
+    </div>
+
+    <div class="tab-content" id="tab-ledger">
+        <div class="empty-tab">
+            <i class="fas fa-file-invoice"></i>
+            <h2>Dnevnik</h2>
+            <p>Pregled knjiženja u realnom vremenu.</p>
+        </div>
+    </div>
+
+    <div class="tab-content" id="tab-settings">
+        <div class="empty-tab">
+            <i class="fas fa-cog"></i>
+            <h2>Postavke</h2>
+            <p>Uskoro: Upravljanje profilom i API postavkama.</p>
+        </div>
+    </div>
+
     <!-- Floating Action Button -->
     <div class="fab">
         <input type="file" id="fileInput" accept="image/*" capture="camera" hidden>
@@ -82,19 +106,19 @@
 
     <!-- Bottom Navigation -->
     <nav class="bottom-nav">
-        <a href="#" class="nav-link active">
+        <a href="#" class="nav-link active" data-tab="dashboard">
             <i class="fas fa-th-large"></i>
             <span>Dashboard</span>
         </a>
-        <a href="#" class="nav-link">
+        <a href="#" class="nav-link" data-tab="history">
             <i class="fas fa-history"></i>
             <span>Povijest</span>
         </a>
-        <a href="#" class="nav-link">
+        <a href="#" class="nav-link" data-tab="ledger">
             <i class="fas fa-file-invoice"></i>
             <span>Dnevnik</span>
         </a>
-        <a href="#" class="nav-link">
+        <a href="#" class="nav-link" data-tab="settings">
             <i class="fas fa-cog"></i>
             <span>Postavke</span>
         </a>

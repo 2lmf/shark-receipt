@@ -21,9 +21,47 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Event Listeners
     btnSync.addEventListener('click', handleSync);
+    initNavigation();
+    initModal();
 });
 
-// --- FUNCTIONS ---
+// --- NAVIGATION ---
+
+function initNavigation() {
+    const navLinks = document.querySelectorAll('.nav-link');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const tabId = link.getAttribute('data-tab');
+
+            // Update Nav Links
+            navLinks.forEach(nl => nl.classList.remove('active'));
+            link.classList.add('active');
+
+            // Update Tab Contents
+            tabContents.forEach(tc => tc.classList.remove('active'));
+            const targetTab = document.getElementById(`tab-${tabId}`);
+            if (targetTab) targetTab.classList.add('active');
+
+            console.log(`Switched to tab: ${tabId}`);
+        });
+    });
+}
+
+function initModal() {
+    const modal = document.getElementById('previewModal');
+    const closeBtn = document.querySelector('.close-modal');
+
+    if (closeBtn) {
+        closeBtn.onclick = () => modal.classList.remove('active');
+    }
+
+    window.onclick = (event) => {
+        if (event.target == modal) modal.classList.remove('active');
+    }
+}
 
 async function fetchData() {
     try {
