@@ -163,6 +163,54 @@ body {
 }
 */
 
+/* --- SETTINGS TAB --- */
+.settings-section {
+    padding-top: 20px;
+}
+
+.settings-card {
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    padding: 25px;
+    border-radius: 20px;
+}
+
+.password-input {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-input input {
+    padding-right: 45px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toggle-password:hover {
+    color: var(--accent);
+}
+
+.settings-hint {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 15px;
+    line-height: 1.4;
+    text-align: center;
+}
+
 /* Dashboard Content */
 .dashboard {
     padding: 20px;

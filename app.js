@@ -1,5 +1,8 @@
 // --- CONFIG ---
-const GAS_URL = "https://script.google.com/macros/s/AKfycbwiBlzkjGQcE8w7l28SeB3VkNhVMhZhFWAw_1s8epZyrqu3dG0uOvy1npx1uIyvtQ4/exec"; // Povezano s deployed backendom
+// Učitavamo iz localStorage ili koristimo zadano
+const DEFAULT_GAS_URL = "https://script.google.com/macros/s/AKfycbwiBlzkjGQcE8w7l28SeB3VkNhVMhZhFWAw_1s8epZyrqu3dG0uOvy1npx1uIyvtQ4/exec";
+let GAS_URL = localStorage.getItem('SHARK_GAS_URL') || DEFAULT_GAS_URL;
+let SHARK_API_KEY = localStorage.getItem('SHARK_API_KEY') || "";
 
 let receiptsData = [];
 let pendingCount = 0;
@@ -34,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initNavigation();
     initModal();
+    initSettings();
 });
 
 // --- HELPERS ---
@@ -68,7 +72,8 @@ async function handleFileUpload(e) {
                 action: "analyzeAndUpload",
                 filename: `Shark_${Date.now()}_${file.name}`,
                 mimeType: file.type,
-                data: base64Content
+                data: base64Content,
+                apiKey: SHARK_API_KEY // Šaljemo ključ ako ga ima u postavkama
             })
         });
 
@@ -120,6 +125,45 @@ const toBase64 = file => new Promise((resolve, reject) => {
 });
 
 // --- NAVIGATION ---
+
+// --- SETTINGS LOGIC ---
+
+function initSettings() {
+    const btnSave = document.getElementById('btnSaveSettings');
+    const toggleVisible = document.getElementById('toggleApiVisible');
+    const inputUrl = document.getElementById('setGasUrl');
+    const inputKey = document.getElementById('setApiKey');
+
+    // Load current values into form
+    inputUrl.value = GAS_URL;
+    inputKey.value = SHARK_API_KEY;
+
+    btnSave.addEventListener('click', () => {
+        GAS_URL = inputUrl.value.trim();
+        SHARK_API_KEY = inputKey.value.trim();
+
+        localStorage.setItem('SHARK_GAS_URL', GAS_URL);
+        localStorage.setItem('SHARK_API_KEY', SHARK_API_KEY);
+
+        btnSave.innerHTML = '<i class="fas fa-check"></i> SPREMLJENO!';
+        btnSave.style.background = '#00D084';
+
+        setTimeout(() => {
+            btnSave.innerHTML = '<i class="fas fa-save"></i> SPREMI POSTAVKE';
+            btnSave.style.background = 'var(--accent)';
+        }, 2000);
+
+        // Refresh data with new URL
+        fetchData();
+    });
+
+    toggleVisible.addEventListener('click', () => {
+        const type = inputKey.getAttribute('type') === 'password' ? 'text' : 'password';
+        inputKey.setAttribute('type', type);
+        toggleVisible.querySelector('i').classList.toggle('fa-eye');
+        toggleVisible.querySelector('i').classList.toggle('fa-eye-slash');
+    });
+}
 
 function initNavigation() {
     const navLinks = document.querySelectorAll('.nav-link');
@@ -423,7 +467,9 @@ async function handleSync() {
 
     try {
         // Pozivamo GET na GAS Web App za sinkronizaciju (CORS friendly)
-        const fetchUrl = GAS_URL.includes("?") ? GAS_URL + "&action=sync" : GAS_URL + "?action=sync";
+        let fetchUrl = GAS_URL.includes("?") ? GAS_URL + "&action=sync" : GAS_URL + "?action=sync";
+        if (SHARK_API_KEY) fetchUrl += `&apiKey=${encodeURIComponent(SHARK_API_KEY)}`;
+
         const response = await fetch(fetchUrl, {
             method: 'GET'
         });
