@@ -2,6 +2,7 @@
 const GAS_URL = "https://script.google.com/macros/s/AKfycbwiBlzkjGQcE8w7l28SeB3VkNhVMhZhFWAw_1s8epZyrqu3dG0uOvy1npx1uIyvtQ4/exec"; // Povezano s deployed backendom
 
 let receiptsData = [];
+let pendingCount = 0;
 
 // --- DOM ELEMENTS ---
 const receiptGrid = document.getElementById('receiptGrid');
@@ -249,6 +250,7 @@ async function fetchData() {
 
         if (result.status === "success") {
             receiptsData = result.items;
+            pendingCount = result.pendingCount !== undefined ? result.pendingCount : 0;
             // Dashboard prikazuje samo novijih top-10
             renderReceipts(receiptsData.slice(0, 10));
             // Povijest i Dnevnik prikazuju sve
@@ -393,7 +395,7 @@ function updateStats() {
         total += parseFloat(r.iznos) || 0;
     });
     monthlyTotalEl.innerText = `${total.toFixed(2)} €`;
-    pendingCountEl.innerText = receiptsData.length;
+    pendingCountEl.innerText = pendingCount;
 }
 
 async function handleSync() {
