@@ -281,6 +281,33 @@ async function confirmAndSaveReceipt() {
     }
 }
 
+async function deleteReceipt(datum, dobavljac, broj_racuna) {
+    if (!confirm(`Jeste li sigurni da želite obrisati račun dobavljača ${dobavljac}?`)) return;
+
+    try {
+        const response = await fetch(GAS_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({
+                action: "deleteRow",
+                datum: datum,
+                dobavljac: dobavljac,
+                broj_racuna: broj_racuna
+            })
+        });
+
+        const result = await response.json();
+        if (result.status === "success") {
+            fetchData(); // Osvježi listu
+        } else {
+            alert("Greška pri brisanju: " + result.message);
+        }
+    } catch (err) {
+        console.error("Greška kod brisanja:", err);
+        alert("Sustav trenutno ne može obrisati zapis.");
+    }
+}
+
 function initModal() {
     const modal = document.getElementById('previewModal');
     const closeBtn = document.querySelector('.close-modal');
@@ -358,10 +385,21 @@ function renderReceipts(data) {
             <div class="receipt-amount">
                 <span class="price">${formatAmount(receipt.iznos)}</span>
             </div>
+            <button class="btn-delete" title="Obrisi zapis">
+                <i class="fas fa-times"></i>
+            </button>
         `;
 
-        card.addEventListener('click', () => {
+        card.addEventListener('click', (e) => {
+            // Ako je kliknuto na gumb za brisanje, ne otvaraj link
+            if (e.target.closest('.btn-delete')) return;
             if (receipt.link) window.open(receipt.link, '_blank');
+        });
+
+        const delBtn = card.querySelector('.btn-delete');
+        delBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            deleteReceipt(receipt.datum, receipt.dobavljac, receipt.broj_racuna);
         });
 
         receiptGrid.appendChild(card);
@@ -402,10 +440,20 @@ function renderHistory(data) {
             <div class="receipt-amount">
                 <span class="price">${formatAmount(receipt.iznos)}</span>
             </div>
+            <button class="btn-delete" title="Obrisi zapis">
+                <i class="fas fa-times"></i>
+            </button>
         `;
 
-        card.addEventListener('click', () => {
+        card.addEventListener('click', (e) => {
+            if (e.target.closest('.btn-delete')) return;
             if (receipt.link) window.open(receipt.link, '_blank');
+        });
+
+        const delBtn = card.querySelector('.btn-delete');
+        delBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            deleteReceipt(receipt.datum, receipt.dobavljac, receipt.broj_racuna);
         });
 
         historyGrid.appendChild(card);
