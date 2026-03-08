@@ -413,26 +413,44 @@ async function handleSync() {
             method: 'GET'
         });
 
-        // Sačekajmo JSON obradu (sada nam to radi jer nismo u "no-cors" opaq. modu)
-        await response.json();
+        const result = await response.json();
+
+        if (result.status === "success" && result.data) {
+            // Popuni modal s AI podacima
+            fillModalForm(result.data, result.fileName);
+
+            // Otvori modal
+            const modal = document.getElementById('previewModal');
+            modal.classList.add('active');
+
+            btnContent.innerHTML = '<i class="fas fa-eye"></i> PREGLED...';
+            btnSync.style.background = '#00D084';
+
+        } else if (result.status === "empty") {
+            btnContent.innerHTML = '<i class="fas fa-info-circle"></i> NEMA RAČUNA';
+            btnSync.style.background = '#FFCC00';
+        } else {
+            throw new Error(result.message || "Neuspjela sinkronizacija");
+        }
 
         // Dovlači nove podatke s backenda (uključujući Pending Count)
         await fetchData();
-
-        btnContent.innerHTML = '<i class="fas fa-check"></i> GOTOVO!';
-        btnSync.style.background = '#00D084';
 
         // Reset button
         setTimeout(() => {
             btnContent.innerHTML = originalContent;
             btnSync.style.background = '#FFFFFF';
+            btnSync.style.color = '#000000';
             btnSync.disabled = false;
-        }, 2000);
-
+        }, 3000);
 
     } catch (err) {
         console.error("Greška pri sinkronizaciji:", err);
-        btnContent.innerHTML = '<i class="fas fa-times"></i> GREŠKA';
+        btnContent.innerHTML = '<i class="fas fa-times"></i> SYNC FAIL';
         btnSync.disabled = false;
+        setTimeout(() => {
+            btnContent.innerHTML = originalContent;
+            btnSync.style.background = '#FFFFFF';
+        }, 3000);
     }
 }
