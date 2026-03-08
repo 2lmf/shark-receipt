@@ -1,0 +1,7 @@
+# Git ignore za SharkReceipt
+backend.gs
+onboarding.gs
+.git
+node_modules/
+.DS_Store
+*.gs
